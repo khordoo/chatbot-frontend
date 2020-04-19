@@ -6,9 +6,9 @@
       class="chatbar--gradient"
       app
       left
-      :clipped="false"
-      permanent="true"
-      :mini-variant.sync="open"
+      :clipped=false
+      permanent=true
+    
       mini-variant-width="70"
       width="250px"
     >
@@ -25,7 +25,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar :clipped-left="primaryDrawer.clipped" app>
+    <v-app-bar :clipped-left="primaryDrawer.clipped" app color="cyan" >
       <v-app-bar-nav-icon
         v-if="primaryDrawer.type !== 'permanent'"
         @click.stop="primaryDrawer.model = !primaryDrawer.model"
@@ -36,7 +36,7 @@
       <v-row no-gutters>
         <v-col v-for="n in 1" :key="n" cols="12" sm="12">
           <v-card class="pa-2" outlined tile height="700">
-            <v-list two-line="true">
+            <v-list two-line=true>
               <v-subheader>CONVERSATION</v-subheader>
               <v-list-item-group color="primary">
                 <v-list-item v-for="(dialog,i) in dialogs" :key="i">
@@ -57,7 +57,7 @@
         <v-col v-for="n in 1" :key="n" cols="12" sm="12">
           <v-text-field
             :append-icon-cb="() => {}"
-            placeholder="Start typing..."
+            placeholder="Say something..."
             single-line
             append-icon="mdi-send"
             color="gray"
@@ -69,7 +69,7 @@
       </v-row>
     </v-container>
 
-    <v-footer :inset="footer.inset" app>
+    <v-footer :inset="footer.inset" app color="cyan" >
       <span class="px-4">&copy;{{ new Date().getFullYear()}} Created by <a href="http://www.linkedin.com/in/khordoo"><span>Mahmood Khordoo</span></a></span>
     </v-footer>
   </v-app>
