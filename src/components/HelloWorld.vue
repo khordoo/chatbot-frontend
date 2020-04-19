@@ -6,9 +6,8 @@
       class="chatbar--gradient"
       app
       left
-      :clipped=false
-      permanent=true
-    
+      :clipped="false"
+      permanent="true"
       mini-variant-width="70"
       width="250px"
     >
@@ -25,18 +24,20 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar :clipped-left="primaryDrawer.clipped" app color="cyan" >
+    <v-app-bar :clipped-left="primaryDrawer.clipped" app color="cyan">
       <v-app-bar-nav-icon
         v-if="primaryDrawer.type !== 'permanent'"
         @click.stop="primaryDrawer.model = !primaryDrawer.model"
+
       />
+      <v-icon class="mx-4" large>mdi-robot</v-icon>
       <v-toolbar-title>RL Chatbot</v-toolbar-title>
     </v-app-bar>
     <v-container class="grey lighten-5" fluid="true">
       <v-row no-gutters>
         <v-col v-for="n in 1" :key="n" cols="12" sm="12">
           <v-card class="pa-2" outlined tile height="700">
-            <v-list two-line=true height="650" id="chatbox" >
+            <v-list two-line="true" height="650" id="chatbox">
               <v-subheader>CONVERSATION</v-subheader>
               <v-list-item-group color="primary">
                 <v-list-item v-for="(dialog,i) in dialogs" :key="i">
@@ -61,27 +62,40 @@
             single-line
             append-icon="mdi-send"
             color="gray"
+    
             hide-details
             v-model="userInputText"
             v-on:keyup.enter="captureUserInput"
-          />
+          >
+    <v-icon slot="append" color="cyan">
+          mdi-send
+       </v-icon>
+          </v-text-field>
         </v-col>
       </v-row>
     </v-container>
 
-    <v-footer :inset="footer.inset" app color="cyan" >
-      <span class="px-4">&copy;{{ new Date().getFullYear()}} Created by <a href="http://www.linkedin.com/in/khordoo"><span>Mahmood Khordoo</span></a></span>
+    <v-footer :inset="footer.inset" app color="cyan">
+      <span class="px-4">
+        &copy;{{ new Date().getFullYear()}} Created by
+        <a href="http://www.linkedin.com/in/khordoo">
+          <span>Mahmood Khordoo</span>
+        </a>
+      </span>
     </v-footer>
   </v-app>
 </template>
 <style scoped>
-.v-list#chatbox{
-  height:200px;
-  overflow-y:auto
+.v-list#chatbox {
+  height: 200px;
+  overflow-y: auto;
 }
+/* .hidden-sm-and-down .v-icon {
+    color: cyan !important;
+} */
 </style>
 <script>
-const NLP_SERVER="http://localhost:5000/chat";
+const NLP_SERVER = "http://localhost:5000/chat";
 const axios = require("axios");
 export default {
   data: () => ({
