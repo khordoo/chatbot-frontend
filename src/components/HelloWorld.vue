@@ -36,7 +36,7 @@
       <v-row no-gutters>
         <v-col v-for="n in 1" :key="n" cols="12" sm="12">
           <v-card class="pa-2" outlined tile height="700">
-            <v-list>
+            <v-list two-line="true">
               <v-subheader>CONVERSATION</v-subheader>
               <v-list-item-group color="primary">
                 <v-list-item v-for="(dialog) in dialogs" :key="dialog.index">
@@ -45,6 +45,7 @@
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title v-text="dialog.text"></v-list-item-title>
+                    <v-list-item-subtitle v-text="dialog.time"></v-list-item-subtitle>
                   </v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
@@ -54,7 +55,6 @@
       </v-row>
       <v-row no-gutters>
         <v-col v-for="n in 1" :key="n" cols="12" sm="12">
-          <!-- <v-card class="pa-2 fill" outlined tile  height="50">One of three columns</v-card> -->
           <v-text-field
             :append-icon-cb="() => {}"
             placeholder="Start typing..."
@@ -70,7 +70,7 @@
     </v-container>
 
     <v-footer :inset="footer.inset" app>
-      <span class="px-4">&copy;Developed By Mahmood Khordoo, {{ new Date().getFullYear() }}</span>
+      <span class="px-4">&copy;Created By Mahmood Khordoo, {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
 </template>
@@ -92,17 +92,7 @@ export default {
       { picture: "lego/1", text: "Bot" },
       { picture: "men/28", text: "User" }
     ],
-    dialogs: [
-      // { index: 1, agent: "user", iconIndex: "men/28", text: "How are you?" },
-      // {
-      //   index: 2,
-      //   agnet: "bot",
-      //   iconIndex: "lego/1",
-      //   text: "Never been better!"
-      // },
-      // { index: 3, agnet: "user", iconIndex: "men/28", text: "Really?" },
-      // { index: 4, agnet: "bot", iconIndex: "lego/1", text: "Yep!" }
-    ],
+    dialogs: [],
     footer: {
       inset: false
     }
@@ -120,7 +110,8 @@ export default {
       this.dialogs.push({
         agnet: agent,
         iconIndex: icon,
-        text: text
+        text: text,
+        time: new Date().toLocaleTimeString()
       });
     },
     queryBot: function() {
