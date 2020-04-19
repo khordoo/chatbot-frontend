@@ -39,7 +39,7 @@
             <v-list two-line="true">
               <v-subheader>CONVERSATION</v-subheader>
               <v-list-item-group color="primary">
-                <v-list-item v-for="(dialog) in dialogs" :key="dialog.index">
+                <v-list-item v-for="(dialog,i) in dialogs" :key="i">
                   <v-list-item-avatar>
                     <img :src="`https://randomuser.me/api/portraits/${dialog.iconIndex}.jpg`" alt />
                   </v-list-item-avatar>
@@ -70,12 +70,13 @@
     </v-container>
 
     <v-footer :inset="footer.inset" app>
-      <span class="px-4">&copy;Created By Mahmood Khordoo, {{ new Date().getFullYear() }}</span>
+      <span class="px-4">&copy;{{ new Date().getFullYear()}} Created by <a href="http://www.linkedin.com/in/khordoo"><span>Mahmood Khordoo</span></a></span>
     </v-footer>
   </v-app>
 </template>
 
 <script>
+const NLP_SERVER="http://localhost:5000/chat";
 const axios = require("axios");
 export default {
   data: () => ({
@@ -98,14 +99,14 @@ export default {
     }
   }),
   methods: {
-    captureUserInput: function(e) {
+    captureUserInput(e) {
       if (e.keyCode === 13) {
         this.updateDialogs("user", this.userInputText);
         this.queryBot();
         this.userInputText = "";
       }
     },
-    updateDialogs: function(agent, text) {
+    updateDialogs(agent, text) {
       const icon = agent == "user" ? "men/28" : "lego/1";
       this.dialogs.push({
         agnet: agent,
@@ -114,10 +115,10 @@ export default {
         time: new Date().toLocaleTimeString()
       });
     },
-    queryBot: function() {
+    queryBot() {
       let self = this;
       axios
-        .post("http://localhost:5000/chat", {
+        .post(NLP_SERVER, {
           text: this.userInputText,
           genre: "comedy"
         })
