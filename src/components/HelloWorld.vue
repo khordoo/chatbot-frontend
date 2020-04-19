@@ -36,7 +36,7 @@
       <v-row no-gutters>
         <v-col v-for="n in 1" :key="n" cols="12" sm="12">
           <v-card class="pa-2" outlined tile height="700">
-            <v-list two-line=true>
+            <v-list two-line=true height="650" id="chatbox" >
               <v-subheader>CONVERSATION</v-subheader>
               <v-list-item-group color="primary">
                 <v-list-item v-for="(dialog,i) in dialogs" :key="i">
@@ -74,7 +74,12 @@
     </v-footer>
   </v-app>
 </template>
-
+<style scoped>
+.v-list#chatbox{
+  height:200px;
+  overflow-y:auto
+}
+</style>
 <script>
 const NLP_SERVER="http://localhost:5000/chat";
 const axios = require("axios");
