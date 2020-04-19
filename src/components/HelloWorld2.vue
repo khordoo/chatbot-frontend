@@ -1,6 +1,15 @@
-
 <template>
-  <v-app id="sandbox" app color="cyan" dark>
+  <v-app id="sandbox">
+    <!-- <v-navigation-drawer
+      v-model="primaryDrawer.model"
+      :clipped="primaryDrawer.clipped"
+      :floating="primaryDrawer.floating"
+      :mini-variant="primaryDrawer.mini"
+      :permanent="primaryDrawer.type === 'permanent'"
+      :temporary="primaryDrawer.type === 'temporary'"
+      app
+      overflow
+    />-->
     <v-navigation-drawer
       v-model="primaryDrawer.model"
       class="chatbar--gradient"
@@ -17,7 +26,7 @@
         <v-list>
           <v-list-item v-for="item in items2" :key="item.text" link>
             <v-list-item-avatar>
-              <img :src="`https://randomuser.me/api/portraits/${item.picture}.jpg`" alt />
+              <img :src="`https://randomuser.me/api/portraits/men/${item.picture}.jpg`" alt />
             </v-list-item-avatar>
             <v-list-item-title v-text="item.text" />
           </v-list-item>
@@ -38,13 +47,14 @@
           <v-card class="pa-2" outlined tile height="700">
             <v-list>
               <v-subheader>CONVERSATION</v-subheader>
-              <v-list-item-group color="primary">
-                <v-list-item v-for="(dialog) in dialogs" :key="dialog.index">
+              <v-list-item-group v-model="item" color="primary">
+                <v-list-item v-for="(dialog, i) in dialogs" :key="i">
                   <v-list-item-avatar>
-                    <img :src="`https://randomuser.me/api/portraits/${dialog.iconIndex}.jpg`" alt />
+                    <img :src="`https://randomuser.me/api/portraits/men/${dialog.user.iconIndex}.jpg`" alt />
                   </v-list-item-avatar>
                   <v-list-item-content>
-                    <v-list-item-title v-text="dialog.text"></v-list-item-title>
+                    <v-list-item-title v-text="dialog.user.text" ></v-list-item-title>
+                    <v-list-item-title v-text="dialog.bot.text" ></v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list-item-group>
@@ -62,25 +72,21 @@
             append-icon="mdi-send"
             color="gray"
             hide-details
-            v-model="userInputText"
-            v-on:keyup.enter="captureUserInput"
           />
         </v-col>
       </v-row>
     </v-container>
 
     <v-footer :inset="footer.inset" app>
-      <span class="px-4">&copy;Developed By Mahmood Khordoo, {{ new Date().getFullYear() }}</span>
+      <span class="px-4">&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
 </template>
 
 <script>
-const axios = require("axios");
 export default {
   data: () => ({
     drawers: ["Default (no property)", "Permanent", "Temporary"],
-    userInputText: "",
     primaryDrawer: {
       model: null,
       type: "default (no property)",
@@ -89,54 +95,22 @@ export default {
       mini: false
     },
     items2: [
-      { picture: "lego/1", text: "Bot" },
-      { picture: "men/28", text: "User" }
+      { picture: 28, text: "Bot" },
+      { picture: 78, text: "User" }
     ],
     dialogs: [
-      // { index: 1, agent: "user", iconIndex: "men/28", text: "How are you?" },
-      // {
-      //   index: 2,
-      //   agnet: "bot",
-      //   iconIndex: "lego/1",
-      //   text: "Never been better!"
-      // },
-      // { index: 3, agnet: "user", iconIndex: "men/28", text: "Really?" },
-      // { index: 4, agnet: "bot", iconIndex: "lego/1", text: "Yep!" }
+      {
+        user: { iconIndex: 28, text: "How are you?" },
+        bot: { iconIndex: 78, text: "Never been better!" }
+      },
+      {
+        user: { iconIndex: 28, text: "Really?" },
+        bot: { iconIndex: 78, text: "Yep!" }
+      }
     ],
     footer: {
       inset: false
     }
-  }),
-  methods: {
-    captureUserInput: function(e) {
-      if (e.keyCode === 13) {
-        this.updateDialogs("user", this.userInputText);
-        this.queryBot();
-        this.userInputText = "";
-      }
-    },
-    updateDialogs: function(agent, text) {
-      const icon = agent == "user" ? "men/28" : "lego/1";
-      this.dialogs.push({
-        agnet: agent,
-        iconIndex: icon,
-        text: text
-      });
-    },
-    queryBot: function() {
-      let self = this;
-      axios
-        .post("http://localhost:5000/chat", {
-          text: this.userInputText,
-          genre: "comedy"
-        })
-        .then(function(response) {
-          self.updateDialogs("bot", response.data.reply);
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
-    }
-  }
+  })
 };
 </script>
