@@ -1,24 +1,24 @@
 
 <template>
-  <v-app id="sandbox" app color="cyan" dark>
+  <v-app id="sandbox" app dark>
     <v-navigation-drawer
       v-model="primaryDrawer.model"
       class="chatbar--gradient"
       app
       left
       :clipped="false"
-      permanent="true"
+      permanent
       mini-variant-width="70"
       width="250px"
     >
+      <v-subheader class="ma-0 pd-10 mt-0 gray--text text--darken-1" id="status">Online users</v-subheader>
       <v-list dense>
-        <v-subheader class="mt-4 grey--text text--darken-1">Online users</v-subheader>
         <v-list>
-          <v-list-item v-for="item in items2" :key="item.text" link>
+          <v-list-item v-for="user in users" :key="user.name" link>
             <v-list-item-avatar>
-              <img :src="`https://randomuser.me/api/portraits/${item.picture}.jpg`" alt />
+              <img :src="`https://randomuser.me/api/portraits/${user.picture}.jpg`" alt />
             </v-list-item-avatar>
-            <v-list-item-title v-text="item.text" />
+            <v-list-item-title v-text="user.name" />
           </v-list-item>
         </v-list>
       </v-list>
@@ -28,19 +28,18 @@
       <v-app-bar-nav-icon
         v-if="primaryDrawer.type !== 'permanent'"
         @click.stop="primaryDrawer.model = !primaryDrawer.model"
-
       />
       <v-icon class="mx-4" large>mdi-robot</v-icon>
-      <v-toolbar-title>RL Chatbot</v-toolbar-title>
+      <v-toolbar-title>Chatbot</v-toolbar-title>
     </v-app-bar>
-    <v-container class="grey lighten-5" fluid="true">
+    <v-container class="grey lighten-5" fluid>
       <v-row no-gutters>
         <v-col v-for="n in 1" :key="n" cols="12" sm="12">
           <v-card class="pa-2" outlined tile height="700">
-            <v-list two-line="true" height="650" id="chatbox">
+            <v-list style="max-height: 650px" height="650px" id="chatbox" class="overflow-y-auto">
               <v-subheader>CONVERSATION</v-subheader>
               <v-list-item-group color="primary">
-                <v-list-item v-for="(dialog,i) in dialogs" :key="i">
+                <v-list-item v-for="(dialog,i) in dialogs" :key="i" id="chat-item">
                   <v-list-item-avatar>
                     <img :src="`https://randomuser.me/api/portraits/${dialog.iconIndex}.jpg`" alt />
                   </v-list-item-avatar>
@@ -55,45 +54,39 @@
         </v-col>
       </v-row>
       <v-row no-gutters>
-        <v-col v-for="n in 1" :key="n" cols="12" sm="12">
+        <v-col cols="12" sm="12">
           <v-text-field
             :append-icon-cb="() => {}"
             placeholder="Say something..."
             single-line
             append-icon="mdi-send"
-            color="gray"
-    
             hide-details
+            color="primary"
             v-model="userInputText"
             v-on:keyup.enter="captureUserInput"
           >
-    <v-icon slot="append" color="cyan">
-          mdi-send
-       </v-icon>
+            <v-icon slot="append" color="primary">mdi-send</v-icon>
           </v-text-field>
         </v-col>
       </v-row>
     </v-container>
 
-    <v-footer :inset="footer.inset" app color="cyan">
-      <span class="px-4">
+    <v-footer
+      :inset="footer.inset"
+      app
+      color="#00acc1"
+      class="white--text font-italic font-weight-light overline"
+    >
+      <span class="px-2 white--text">
         &copy;{{ new Date().getFullYear()}} Created by
-        <a href="http://www.linkedin.com/in/khordoo">
-          <span>Mahmood Khordoo</span>
+        <a href="http://www.github.com/khordoo">
+          <span class="white--text">Mahmood Khordoo</span>
         </a>
       </span>
     </v-footer>
   </v-app>
 </template>
-<style scoped>
-.v-list#chatbox {
-  height: 200px;
-  overflow-y: auto;
-}
-/* .hidden-sm-and-down .v-icon {
-    color: cyan !important;
-} */
-</style>
+
 <script>
 const NLP_SERVER = "http://localhost:5000/chat";
 const axios = require("axios");
@@ -101,6 +94,7 @@ export default {
   data: () => ({
     drawers: ["Default (no property)", "Permanent", "Temporary"],
     userInputText: "",
+    offsetTop: 0,
     primaryDrawer: {
       model: null,
       type: "default (no property)",
@@ -108,9 +102,9 @@ export default {
       floating: false,
       mini: false
     },
-    items2: [
-      { picture: "lego/1", text: "Bot" },
-      { picture: "men/28", text: "User" }
+    users: [
+      { picture: "lego/1", name: "Bot" },
+      { picture: "men/85", name: "User" }
     ],
     dialogs: [],
     footer: {
@@ -126,7 +120,7 @@ export default {
       }
     },
     updateDialogs(agent, text) {
-      const icon = agent == "user" ? "men/28" : "lego/1";
+      const icon = agent == "bot" ? "lego/1" : "men/85";
       this.dialogs.push({
         agnet: agent,
         iconIndex: icon,
@@ -138,15 +132,20 @@ export default {
       let self = this;
       axios
         .post(NLP_SERVER, {
-          text: this.userInputText,
-          genre: "comedy"
+          text: this.userInputText
         })
         .then(function(response) {
           self.updateDialogs("bot", response.data.reply);
+          self.scrollToEnd();
         })
         .catch(function(error) {
           console.log(error);
         });
+    },
+    scrollToEnd: function() {
+      document.getElementById("chatbox").scrollTop = document.getElementById(
+        "chatbox"
+      ).scrollHeight;
     }
   }
 };
